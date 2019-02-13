@@ -1,45 +1,95 @@
 import React from 'react'
-import { View, TextInput, Button, SafeAreaView, StyleSheet } from 'react-native'
+import { View, Button, SafeAreaView, StyleSheet } from 'react-native'
+import TextField from './TextField'
+import Validation from './Validation'
+import Validate from './ValidateWrapper'
 
 class CreationCompte extends React.Component {
 
   constructor(props) {
     super(props)
     this.state = {
-      TextInputValue: '',
-      ErrorStatus : true,
+      email: '',
+      emailError: '',
+      passwordError: '',
+      passwordError: '',
+      username: '',
+      usernameError: '',
+      nom: '',
+      nomError: '',
+      prenom: '',
+      prenomError: ''
      }
   }
 
-  onEnterText = (TextInputValue) =>{
-    if (TextInputValue.trim() != 0){
-      this.setState({TextInputValue : TextInputValue, ErrorStatus : true});
-    }else{
-      this.setState({TextInputValue : TextInputValue, ErrorStatus : false});
-    }
-  }
+  register() {
+    const emailError = validate('email', this.state.email)
+    const passwordError = validate('passwordError', this.state.passwordError)
+    const usernameError = validate('username', this.state.username)
+    const nomError = validate('nom', this.state.nom)
+    const prenomError = validate('prenom', this.state.prenom)
 
-  buttonClickListener = () =>{
-    const { TextInputValue } = this.state ;
-    if (TextInputValue == ""){
-      Alert.alert("Des champs sont vides !")
+    this.setState({
+      emailError: emailError,
+      passwordError: passwordError,
+      usernameError: usernameError,
+      nomError: nomError,
+      prenomError: prenomError
+    })
+
+    if (!emailError && !passwordError && !usernameError && !nomError && !prenomError ){
+      alert('Attention certains champs sont vides ou invalides')
     }
   }
 
   render() {
     return (
-      <SafeAreaView >
-        <TextInput style={styles.textinput} placeholder='Adresse Mail' onChangedText={TextInputValue => this.onEnterText(TextInputValue)}/>
-        <TextInput style={styles.textinput} placeholder='Mot de Passe' secureTextEntry={true} onChangedText={TextInputValue => this.onEnterText(TextInputValue)}/>
-        <TextInput style={styles.textinput} placeholder='Pseudonyme' onChangedText={TextInputValue => this.onEnterText(TextInputValue)}/>
-        <TextInput style={styles.textinput} placeholder='Nom' onChangedText={TextInputValue => this.onEnterText(TextInputValue)}/>
-        <TextInput style={styles.textinput} placeholder='Prénom' onChangedText={TextInputValue => this.onEnterText(TextInputValue)}/>
-        { this.state.ErrorStatus == fasle ? (
-          <Text style={styles.errorMessage}>Certains champs sont vides</Text>
-        )}
-      </SafeAreaView>
-        <Button title='Je crée mon compte' onPress={this.buttonClickListener}}/>
-
+      <View>
+      <TextField
+        onChangeText={value => this.setState({email: value.trim()})}
+        onBlur={() => {
+          this.setState({
+            emailError: validate('adresse mail', this.state.email)
+          })
+        }}
+        error={this.state.emailError} />
+        <TextField
+          onChangeText={value => this.setState({password: value.trim()})}
+          onBlur={() => {
+            this.setState({
+              passwordError: validate('mot de passe', this.state.password)
+            })
+          }}
+          error={this.state.passwordError}/>
+          <TextField
+          onChangeText={value => this.setState({username: value.trim()})}
+          onBlur={() => {
+            this.setState({
+              usernameError: validate('Pseudo', this.state.username)
+            })
+          }}
+          error={this.state.usernameError}/>
+          <TextField
+          onChangeText={value => this.setState({nom: value.trim()})}
+          onBlur={() => {
+            this.setState({
+              nomError: validate('nom', this.state.nom)
+            })
+          }}
+          error={this.state.nomError}/>
+          <TextField
+          onChangeText={value => this.setState({prenom: value.trim()})}
+          onBlur={() => {
+            this.setState({
+              prenomError: validate('prenom', this.state.prenom)
+            })
+          }}
+          error={this.state.prenom}/>
+          <Button
+            title='Je créer mon compte'
+            onPress={this.validateRegister}
+          />
+      </View>
     )
   }
 }
